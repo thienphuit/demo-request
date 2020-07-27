@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="searchInput" placeholder="Search by phone number..." />
+    <button id="add-btn" >Add</button>
+    <table id="category-table"></table>
+    <script type="text/javascript">
+        var storeKey = "cateList"
+        var data = localStorage.getItem(storeKey)
+        var categorys;
+        if(data){
+            categorys = JSON.parse(data);
+        }else{
+            categorys = [];
+        }
+        var btnAdd = document.getElementById('add-btn');
+        var input  = document.getElementById('searchInput');
+        btnAdd.addEventListener('click',addData);
+
+        input.value = sessionStorage.getItem('draft')
+        input.addEventListener('change', updateSection);
+
+        function updateSection(){
+            sessionStorage.setItem('draft',input.value)
+        }
+
+        function addData(){
+            var newInput = input.value;
+            console.log(newInput);
+            var obj = {name: "Hhh",age: 10};
+           // obj["01"] = newInput
+            categorys.push(newInput)
+            render();
+            input.value = '';
+            localStorage.setItem(storeKey, JSON.stringify(categorys))
+        }
+        const render = () => {
+            var cateogryTable = document.getElementById('category-table');
+            var content = categorys.map(function(category){
+                return '<tr><td>' + category +'</td></tr>'
+            });
+            cateogryTable.innerHTML = content.join('');
+        }
+    
+        render();
+
+    </script>
+</body>
+</html>
