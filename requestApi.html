@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document2</title>
+  </head>
+  <body>
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Search by phone number..."
+    />
+   <span> <p id="post-p">Post</p> <p id="put-p">put-p</p></span>
+    <button id="put-btn">Put</button>
+    <button id="post-btn">post</button>
+    <button id="add-btn">Add</button>
+    <button id="delete-btn">Delete</button>
+    <table id="category-table"></table>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript">
+      var storeKey = "cateList";
+      var link = "https://jsonplaceholder.typicode.com/todos";
+      axios.get(link).then(function (res) {
+        var items = res.data;
+        //console.log("item",item)
+        render(items);
+      });
+      //var data = localStorage.getItem(storeKey)
+      var categorys = [];
+      // if(data){
+      //     categorys = JSON.parse(data);
+      // }else{
+      //     categorys = [];
+      // }
+
+      var btnAdd = document.getElementById("add-btn");
+      var input = document.getElementById("searchInput");
+      btnAdd.addEventListener("click", addData);
+
+      input.value = sessionStorage.getItem("draft");
+      input.addEventListener("change", updateSection);
+
+      function updateSection() {
+        sessionStorage.setItem("draft", input.value);
+      }
+
+      function addData() {
+        var newInput = input.value;
+        console.log(newInput);
+        var obj = { name: "Hhh", age: 10 };
+        // obj["01"] = newInput
+        categorys.push(newInput);
+        // render();
+        input.value = "";
+        localStorage.setItem(storeKey, JSON.stringify(categorys));
+      }
+      const render = (items) => {
+        var cateogryTable = document.getElementById("category-table");
+        var content = items.map(function (category) {
+          return "<tr><td>" + category.title + "</td></tr>";
+        });
+        cateogryTable.innerHTML = content.join("");
+      };
+      //handle btn post
+      var postBtn = document.getElementById("post-btn");
+      const posttoDo = () => {
+        // Send a POST request
+        axios({
+          method: "post",
+          url: "https://jsonplaceholder.typicode.com/posts",
+        }).then(function (res) {
+          var temp = res.data;
+          var post = document.getElementById("post-p");
+          console.log(temp);
+          post.innerHTML = temp.id;
+        });
+      };
+      postBtn.addEventListener("click", posttoDo);
+      // posttoDo();
+
+      var putBtn = document.getElementById("put-btn");
+      const putToDo = () => {
+        let content = {
+          id: 1,
+          title: "foo",
+          body: "ba",
+          userId: 1,
+        };
+        axios({
+          method: "put",
+          url: "https://jsonplaceholder.typicode.com/posts/1",
+          data: content,
+        }).then(function (res) {
+          var dataPut = res.data;
+          var put = document.getElementById('put-p');
+          console.log("put", dataPut);
+          put.innerHTML = dataPut.title;
+        });
+      };
+      putBtn.addEventListener('click',putToDo)
+      // render(item);
+
+      //func delete
+      var deleteBtn = document.getElementById("delete-btn")
+      const deleteTodo = () => {
+          axios.delete("https://jsonplaceholder.typicode.com/posts/1").then(function(res){
+              console.log("delete",res.data);
+          })
+      }
+      deleteBtn.addEventListener('click', deleteTodo)
+    </script>
+  </body>
+</html>
